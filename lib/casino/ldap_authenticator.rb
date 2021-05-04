@@ -11,7 +11,7 @@ class CASino::LDAPAuthenticator
 
   def validate(username, password)
     authenticate(username, password)
-  rescue Net::LDAP::LdapError => e
+  rescue Net::LDAP::Error => e
     raise CASino::Authenticator::AuthenticatorError,
       "LDAP authentication failed with '#{e}'. Check your authenticator configuration."
   end
