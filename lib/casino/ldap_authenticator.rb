@@ -21,17 +21,19 @@ class CASino::LDAPAuthenticator
   end
 
   private
+  
   def connect_to_ldap
-    Net::LDAP.new.tap do |ldap|
-      ldap.host = @options[:host]
-      ldap.port = @options[:port]
-      if @options[:encryption]
-        ldap.encryption(@options[:encryption].to_sym)
-      end
-      unless @options[:admin_user].nil?
-        ldap.auth(@options[:admin_user], @options[:admin_password])
-      end
+    ldap = Net::LDAP.new(
+      host: @options[:host],
+      port: @options[:port],
+      encryption: { method: :simple_tls, tls_options: { verify_mode: OpenSSL::SSL::VERIFY_NONE }}
+    )
+
+    unless @options[:admin_user].nil?
+      ldap.auth(@options[:admin_user], @options[:admin_password])
     end
+
+    ldap
   end
 
   def authenticate(username, password)
